@@ -1,5 +1,7 @@
 const UserTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const ThreadTableTestHelper = require('../../../../tests/ThreadTableTestHelper');
+const CommentTableTestHelper = require('../../../../tests/CommentTestTableHelper');
+const RepliesTableTestHelper = require('../../../../tests/RepliesTableTestHelper');
 const ThreadRepositoryPostgres = require('../ThreadRespositoryPostgres');
 const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
 const NewThread = require('../../../Domains/threads/entities/NewThread');
@@ -107,6 +109,60 @@ describe('ThreadRepositoryPostgres', () => {
         body: 'sebuah body',
         date: new Date('2023-01-19T00:00:00.000Z'),
         username: 'dicoding',
+      });
+    });
+  });
+
+  describe('verifyAvailableThread function', () => {
+    it('should throw NotFoundError when thread not found', async () => {
+      // Arrange
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
+
+      // Action & Assert
+      await expect(threadRepositoryPostgres.verifyAvailableThread('thread-1')).rejects.toThrowError(NotFoundError);
+    });
+
+    it('should not throw NotFoundError when thread found', async () => {
+      // Arrange
+      await UserTableTestHelper.addUser({
+        username: 'dicoding',
+        password: 'secret_password',
+      });
+
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
+      await ThreadTableTestHelper.addThread({ id: 'thread-123' });
+
+      // Action & Assert
+      await expect(threadRepositoryPostgres.verifyAvailableThread('thread-123')).resolves.not.toThrowError(NotFoundError);
+    });
+  });
+
+  describe('getRepliesByThreadId function', () => {
+    it('should return replies correctly', async () => {
+      // Arrange
+      await UserTableTestHelper.addUser({
+        username: 'dicoding',
+        password: 'secret_password',
+      });
+      await ThreadTableTestHelper.addThread({ id: 'thread-123' });
+      await CommentTableTestHelper.addComment({ id: 'comment-123', threadId: 'thread-123' });
+      await RepliesTableTestHelper.addReply({ id: 'reply-123', commentId: 'comment-123' });
+
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
+
+      // Action
+      const replies = await threadRepositoryPostgres.getRepliesByThreadId('thread-123');
+
+      // Assert
+      expect(replies).toHaveLength(1);
+      expect(replies[0]).toStrictEqual({
+        id: 'reply-123',
+        comment_id: 'comment-123',
+        username: 'dicoding',
+        date: new Date('2023-01-19T00:00:00.000Z'),
+        content: 'sebuah balasan',
+        owner: 'user-123',
+        is_deleted: false,
       });
     });
   });

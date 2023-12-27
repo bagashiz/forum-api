@@ -58,7 +58,13 @@ describe('GetThreadUseCase', () => {
     mockThreadRepository.getThreadById = jest.fn()
       .mockImplementation(() => Promise.resolve(expectedThread));
     mockCommentRepository.getCommentsByThreadId = jest.fn()
-      .mockImplementation(() => Promise.resolve(expectedComments));
+      .mockImplementation(() => Promise.resolve(
+        expectedComments.map((comment) => ({
+          ...comment,
+          thread_id: useCasePayload.threadId,
+          owner: comment.username,
+        })),
+      ));
     mockThreadRepository.getRepliesByThreadId = jest.fn()
       .mockImplementation(() => Promise.resolve(expectedReplies));
 

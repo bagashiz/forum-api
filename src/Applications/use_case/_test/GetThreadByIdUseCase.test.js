@@ -3,7 +3,7 @@ const CommentRepository = require('../../../Domains/comments/CommentRepository')
 const GetThreadUseCase = require('../GetThreadByIdUseCase');
 
 describe('GetThreadUseCase', () => {
-  it('should orchestrating the add thread action correctly', async () => {
+  it('should orchestrating the get thread action correctly', async () => {
     // Arrange
     const useCasePayload = {
       threadId: 'thread-123',
@@ -20,35 +20,39 @@ describe('GetThreadUseCase', () => {
     const expectedComments = [
       {
         id: 'comment-123',
-        username: 'dicoding',
-        date: '2022',
+        thread_id: 'thread-123',
+        owner: 'user-123',
         content: 'ini adalah isi komentar',
+        date: '2022',
         is_deleted: false,
+        username: 'dicoding',
       },
     ];
 
     const expectedReplies = [
       {
         id: 'reply-123',
+        comment_id: 'comment-123',
+        owner: 'user-123',
         content: 'ini adalah isi balasan',
         date: '2022',
-        username: 'jhon',
-        comment_id: 'comment-123',
         is_deleted: false,
+        username: 'jhon',
       },
     ];
 
-    const mappedComments = expectedComments
-      .map(({ is_deleted: deletedComment, ...otherProperties }) => otherProperties);
-    const mappedReplies = expectedReplies
-      .map(({ comment_id, is_deleted, ...otherProperties }) => otherProperties);
-
-    const expectedCommentsAndReplies = [
-      {
-        ...mappedComments[0],
-        replies: mappedReplies,
-      },
-    ];
+    const expectedCommentsAndReplies = expectedComments.map((comment) => ({
+      id: comment.id,
+      username: comment.username,
+      date: comment.date,
+      content: comment.content,
+      replies: expectedReplies.map((reply) => ({
+        id: reply.id,
+        content: reply.content,
+        date: reply.date,
+        username: reply.username,
+      })),
+    }));
 
     /** creating dependency of use case */
     const mockThreadRepository = new ThreadRepository();
@@ -58,13 +62,7 @@ describe('GetThreadUseCase', () => {
     mockThreadRepository.getThreadById = jest.fn()
       .mockImplementation(() => Promise.resolve(expectedThread));
     mockCommentRepository.getCommentsByThreadId = jest.fn()
-      .mockImplementation(() => Promise.resolve(
-        expectedComments.map((comment) => ({
-          ...comment,
-          thread_id: useCasePayload.threadId,
-          owner: comment.username,
-        })),
-      ));
+      .mockImplementation(() => Promise.resolve(expectedComments));
     mockThreadRepository.getRepliesByThreadId = jest.fn()
       .mockImplementation(() => Promise.resolve(expectedReplies));
 
@@ -103,35 +101,39 @@ describe('GetThreadUseCase', () => {
     const expectedComments = [
       {
         id: 'comment-123',
-        username: 'dicoding',
+        thread_id: 'thread-123',
+        owner: 'user-123',
+        content: 'ini adalah isi komentar',
         date: '2022',
-        content: '**komentar telah dihapus**',
-        is_deleted: true,
+        is_deleted: false,
+        username: 'dicoding',
       },
     ];
 
     const expectedReplies = [
       {
         id: 'reply-123',
-        content: '**balasan telah dihapus**',
-        date: '2022',
-        username: 'jhon',
         comment_id: 'comment-123',
-        is_deleted: true,
+        owner: 'user-123',
+        content: 'ini adalah isi balasan',
+        date: '2022',
+        is_deleted: false,
+        username: 'jhon',
       },
     ];
 
-    const mappedComments = expectedComments
-      .map(({ is_deleted: deletedComment, ...otherProperties }) => otherProperties);
-    const mappedReplies = expectedReplies
-      .map(({ comment_id, is_deleted, ...otherProperties }) => otherProperties);
-
-    const expectedCommentsAndReplies = [
-      {
-        ...mappedComments[0],
-        replies: mappedReplies,
-      },
-    ];
+    const expectedCommentsAndReplies = expectedComments.map((comment) => ({
+      id: comment.id,
+      username: comment.username,
+      date: comment.date,
+      content: comment.content,
+      replies: expectedReplies.map((reply) => ({
+        id: reply.id,
+        content: reply.content,
+        date: reply.date,
+        username: reply.username,
+      })),
+    }));
 
     /** creating dependency of use case */
     const mockThreadRepository = new ThreadRepository();

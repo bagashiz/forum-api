@@ -133,16 +133,11 @@ describe('ThreadRepositoryPostgres', () => {
       await ThreadTableTestHelper.addThread({ id: 'thread-123' });
 
       // Action
-      const thread = await threadRepositoryPostgres.verifyAvailableThread('thread-123');
+      await expect(threadRepositoryPostgres.verifyAvailableThread('thread-123')).resolves.not.toThrowError(NotFoundError);
+      const isExist = await threadRepositoryPostgres.verifyAvailableThread('thread-123');
 
       // Assert
-      expect(thread).not.toStrictEqual({
-        id: 'thread-123',
-        title: 'sebuah thread',
-        body: 'sebuah body',
-        date: new Date('2023-01-19T00:00:00.000Z'),
-        username: 'dicoding',
-      });
+      expect(isExist).toBeTruthy();
     });
   });
 

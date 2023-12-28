@@ -102,7 +102,7 @@ describe('CommentRepositoryPostgres', () => {
         expect(isCommentOwner).toBeTruthy();
       });
 
-      it('should return Authorizationerror when comment owner is not the same as the payload', async () => {
+      it('should return AuthorizationError when comment owner is not the same as the payload', async () => {
         const newComment = new NewComment({
           content: 'some content',
           threadId: 'thread-123',
@@ -198,6 +198,7 @@ describe('CommentRepositoryPostgres', () => {
       it('should not throw NotFoundError when thread and comment are available', async () => {
         await CommentsTableTestHelper.addComment({
           id: 'comment-123',
+          thread_id: 'thread-123',
           content: 'first comment',
           date: new Date('2023-01-19T00:00:00.000Z'),
         });
@@ -208,12 +209,14 @@ describe('CommentRepositoryPostgres', () => {
           {},
         );
 
+        // Action
         await expect(
-          commentRepositoryPostgres.verifyAvailableCommentInThread(
-            'comment-123',
-            'thread-123',
-          ),
+          commentRepositoryPostgres.verifyAvailableCommentInThread('comment-123', 'thread-123'),
         ).resolves.not.toThrowError(NotFoundError);
+        const isExist = await commentRepositoryPostgres.verifyAvailableCommentInThread('comment-123', 'thread-123');
+
+        // Assert
+        expect(isExist).toBeTruthy();
       });
     });
 

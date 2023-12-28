@@ -33,9 +33,9 @@ describe('DeleteAuthenticationUseCase', () => {
     };
     const mockAuthenticationRepository = new AuthenticationRepository();
     mockAuthenticationRepository.checkAvailabilityToken = jest.fn()
-      .mockImplementation(() => Promise.resolve());
+      .mockImplementation(() => Promise.resolve(1));
     mockAuthenticationRepository.deleteToken = jest.fn()
-      .mockImplementation(() => Promise.resolve());
+      .mockImplementation(() => Promise.resolve(1));
 
     const deleteAuthenticationUseCase = new DeleteAuthenticationUseCase({
       authenticationRepository: mockAuthenticationRepository,

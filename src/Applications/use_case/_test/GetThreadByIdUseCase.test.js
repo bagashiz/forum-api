@@ -105,7 +105,7 @@ describe('GetThreadUseCase', () => {
         owner: 'user-123',
         content: 'ini adalah isi komentar',
         date: '2022',
-        is_deleted: false,
+        is_deleted: true,
         username: 'dicoding',
       },
     ];
@@ -117,7 +117,7 @@ describe('GetThreadUseCase', () => {
         owner: 'user-123',
         content: 'ini adalah isi balasan',
         date: '2022',
-        is_deleted: false,
+        is_deleted: true,
         username: 'jhon',
       },
     ];
@@ -126,10 +126,10 @@ describe('GetThreadUseCase', () => {
       id: comment.id,
       username: comment.username,
       date: comment.date,
-      content: comment.content,
+      content: '**komentar telah dihapus**',
       replies: expectedReplies.map((reply) => ({
         id: reply.id,
-        content: reply.content,
+        content: '**balasan telah dihapus**',
         date: reply.date,
         username: reply.username,
       })),

@@ -29,17 +29,17 @@ describe('AddReplyUseCase', () => {
 
     /** mocking needed function */
     mockThreadRepository.verifyAvailableThread = jest.fn()
-      .mockImplementation(() => Promise.resolve());
-    mockCommentRepository.verifyAvailableCommentInThread = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve());
-    mockReplyRepository.addReply = jest.fn().mockImplementation(() => Promise.resolve(
-      new AddedReply({
-        id: 'reply-123',
-        content: useCasePayload.content,
-        owner: useCasePayload.owner,
-      }),
-    ));
+      .mockImplementation(() => Promise.resolve(1));
+    mockCommentRepository.verifyAvailableCommentInThread = jest.fn()
+      .mockImplementation(() => Promise.resolve(1));
+    mockReplyRepository.addReply = jest.fn()
+      .mockImplementation(() => Promise.resolve(
+        new AddedReply({
+          id: 'reply-123',
+          content: useCasePayload.content,
+          owner: useCasePayload.owner,
+        }),
+      ));
 
     const addReplyUseCase = new AddReplyUseCase({
       threadRepository: mockThreadRepository,

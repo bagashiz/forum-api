@@ -91,6 +91,8 @@ describe('ReplyRepositoryPostgres', () => {
 
         // action & assert
         await expect(replyRepositoryPostgres.verifyAvailableReply('thread-123', 'comment-123', 'reply-123')).resolves.not.toThrowError(NotFoundError);
+        const exist = await replyRepositoryPostgres.verifyAvailableReply('thread-123', 'comment-123', 'reply-123');
+        expect(exist).toEqual(1);
       });
     });
 
@@ -134,11 +136,11 @@ describe('ReplyRepositoryPostgres', () => {
         const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
 
         // action
-        await replyRepositoryPostgres.deleteReplyById('reply-123');
+        const isDeleted = replyRepositoryPostgres.deleteReplyById('reply-123');
+        const replies = await RepliesTableTestHelper.getReplyById('reply-123');
 
         // assert
-        const replies = await RepliesTableTestHelper.getReplyById('reply-123');
-        expect(replies).toHaveLength(1);
+        expect(isDeleted).toBeTruthy();
         expect(replies[0].is_deleted).toEqual(true);
       });
 

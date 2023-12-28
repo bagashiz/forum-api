@@ -22,9 +22,9 @@ class CommentRepositoryPostgres extends CommentRepository {
       values: [id, threadId, owner, content, date],
     };
 
-    const { rows } = await this._pool.query(query);
+    const result = await this._pool.query(query);
 
-    return new AddedComment({ ...rows[0] });
+    return new AddedComment(result.rows[0]);
   }
 
   async verifyCommentOwner(commentId, ownerId) {

@@ -245,11 +245,15 @@ describe('CommentRepositoryPostgres', () => {
           {},
         );
 
-        await commentRepositoryPostgres.deleteCommentById('comment-123');
+        // Action
+        const isDeleted = await commentRepositoryPostgres.deleteCommentById('comment-123');
 
         const comment = await CommentsTableTestHelper.getCommentById(
           'comment-123',
         );
+
+        // Assert
+        expect(isDeleted).toBeTruthy();
         expect(comment[0].is_deleted).toEqual(true);
       });
     });

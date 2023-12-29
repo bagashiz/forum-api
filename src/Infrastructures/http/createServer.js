@@ -9,11 +9,17 @@ const authentications = require('../../Interfaces/http/api/authentications');
 const comments = require('../../Interfaces/http/api/comments');
 const replies = require('../../Interfaces/http/api/replies');
 const threads = require('../../Interfaces/http/api/threads');
+const likes = require('../../Interfaces/http/api/likes');
 
 const createServer = async (container) => {
   const server = Hapi.server({
     host: process.env.HOST,
     port: process.env.PORT,
+    routes: {
+      cors: {
+        origin: ['*'],
+      },
+    },
   });
 
   await server.register([
@@ -21,6 +27,14 @@ const createServer = async (container) => {
       plugin: Jwt,
     },
   ]);
+
+  server.route({
+    method: 'GET',
+    path: '/',
+    handler: () => ({
+      value: 'Hello World!',
+    }),
+  });
 
   server.auth.strategy('forumapi_jwt', 'jwt', {
     keys: process.env.ACCESS_TOKEN_KEY,
@@ -57,6 +71,10 @@ const createServer = async (container) => {
     },
     {
       plugin: replies,
+      options: { container },
+    },
+    {
+      plugin: likes,
       options: { container },
     },
   ]);

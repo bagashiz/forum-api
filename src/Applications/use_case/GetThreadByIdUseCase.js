@@ -1,7 +1,8 @@
 class getThreadByIdUseCase {
-  constructor({ commentRepository, threadRepository }) {
+  constructor({ commentRepository, threadRepository, likeRepository }) {
     this._commentRepository = commentRepository;
     this._threadRepository = threadRepository;
+    this._likeUnlikeRepository = likeRepository;
   }
 
   async execute(threadId) {
@@ -12,6 +13,9 @@ class getThreadByIdUseCase {
     const replies = await this._threadRepository.getRepliesByThreadId(
       threadId,
     );
+    const likesCount = await this._likeUnlikeRepository.getLikeCountComment(
+      threadId,
+    );
 
     comments = comments.map((comment) => ({
       id: comment.id,
@@ -20,6 +24,9 @@ class getThreadByIdUseCase {
       content: comment.is_deleted
         ? '**komentar telah dihapus**'
         : comment.content,
+      likeCount: likesCount.filter(
+        (like) => like.comment_id === comment.id,
+      ).length,
       replies: replies
         .filter((reply) => reply.comment_id === comment.id)
         .map((reply) => ({

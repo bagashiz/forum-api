@@ -16,10 +16,14 @@ describe('a LikeUnlikeCommentUseCase use case', () => {
     const mockCommentRepository = new CommentRepository();
     const mockLikeRepository = new LikeRepository();
 
-    mockThreadRepository.verifyAvailableThread = jest.fn().mockImplementation(() => Promise.resolve());
-    mockCommentRepository.verifyAvailableCommentInThread = jest.fn().mockImplementation(() => Promise.resolve());
-    mockLikeRepository.checkLikeComment = jest.fn().mockImplementation(() => Promise.resolve(1));
-    mockLikeRepository.unlikeComment = jest.fn().mockImplementation(() => Promise.resolve(1));
+    mockThreadRepository.verifyAvailableThread = jest.fn()
+      .mockImplementation(() => Promise.resolve());
+    mockCommentRepository.verifyAvailableCommentInThread = jest.fn()
+      .mockImplementation(() => Promise.resolve());
+    mockLikeRepository.checkLikeComment = jest.fn()
+      .mockImplementation(() => Promise.resolve(1));
+    mockLikeRepository.unlikeComment = jest.fn()
+      .mockImplementation(() => Promise.resolve(1));
 
     const likeUnlikeComment = new LikeUnlikeCommentUseCase({
       threadRepository: mockThreadRepository,
@@ -32,10 +36,14 @@ describe('a LikeUnlikeCommentUseCase use case', () => {
 
     // Assert
     expect(isLike).toEqual(1);
-    expect(mockThreadRepository.verifyAvailableThread).toBeCalledWith(useCasePayload.threadId);
-    expect(mockCommentRepository.verifyAvailableCommentInThread).toBeCalledWith(useCasePayload.commentId, useCasePayload.threadId);
-    expect(mockLikeRepository.checkLikeComment).toBeCalledWith(useCasePayload);
-    expect(mockLikeRepository.unlikeComment).toBeCalledWith(useCasePayload);
+    expect(mockThreadRepository.verifyAvailableThread)
+      .toBeCalledWith(useCasePayload.threadId);
+    expect(mockCommentRepository.verifyAvailableCommentInThread)
+      .toBeCalledWith(useCasePayload.commentId, useCasePayload.threadId);
+    expect(mockLikeRepository.checkLikeComment)
+      .toBeCalledWith(useCasePayload);
+    expect(mockLikeRepository.unlikeComment)
+      .toBeCalledWith(useCasePayload);
   });
 
   it('should orchestrating the like comment action correctly', async () => {
@@ -50,10 +58,14 @@ describe('a LikeUnlikeCommentUseCase use case', () => {
     const mockCommentRepository = new CommentRepository();
     const mockLikeRepository = new LikeRepository();
 
-    mockThreadRepository.verifyAvailableThread = jest.fn().mockImplementation(() => Promise.resolve(1));
-    mockCommentRepository.verifyAvailableCommentInThread = jest.fn().mockImplementation(() => Promise.resolve(1));
-    mockLikeRepository.checkLikeComment = jest.fn().mockImplementation(() => Promise.resolve(0));
-    mockLikeRepository.likeComment = jest.fn().mockImplementation(() => Promise.resolve(1));
+    mockThreadRepository.verifyAvailableThread = jest.fn()
+      .mockImplementation(() => Promise.resolve(1));
+    mockCommentRepository.verifyAvailableCommentInThread = jest.fn()
+      .mockImplementation(() => Promise.resolve(1));
+    mockLikeRepository.checkLikeComment = jest.fn()
+      .mockImplementation(() => Promise.resolve(0));
+    mockLikeRepository.likeComment = jest.fn()
+      .mockImplementation(() => Promise.resolve(1));
 
     const likeUnlikeComment = new LikeUnlikeCommentUseCase({
       threadRepository: mockThreadRepository,
@@ -66,9 +78,13 @@ describe('a LikeUnlikeCommentUseCase use case', () => {
 
     // Assert
     expect(isUnlike).toEqual(1);
-    expect(mockThreadRepository.verifyAvailableThread).toBeCalledWith(useCasePayload.threadId);
-    expect(mockCommentRepository.verifyAvailableCommentInThread).toBeCalledWith(useCasePayload.commentId, useCasePayload.threadId);
-    expect(mockLikeRepository.checkLikeComment).toBeCalledWith(useCasePayload);
-    expect(mockLikeRepository.likeComment).toBeCalledWith(useCasePayload);
+    expect(mockThreadRepository.verifyAvailableThread)
+      .toBeCalledWith(useCasePayload.threadId);
+    expect(mockCommentRepository.verifyAvailableCommentInThread)
+      .toBeCalledWith(useCasePayload.commentId, useCasePayload.threadId);
+    expect(mockLikeRepository.checkLikeComment)
+      .toBeCalledWith(useCasePayload);
+    expect(mockLikeRepository.likeComment)
+      .toBeCalledWith(useCasePayload);
   });
 });

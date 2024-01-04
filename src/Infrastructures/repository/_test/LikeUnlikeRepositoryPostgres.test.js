@@ -28,6 +28,7 @@ describe('LikeUnlikeRepositoryPostgres', () => {
       await UsersTableTestHelper.cleanTable();
       await ThreadsTableTestHelper.cleanTable();
       await CommentsTableTestHelper.cleanTable();
+      await pool.end();
     });
 
     describe('checkLikeComment function', () => {
